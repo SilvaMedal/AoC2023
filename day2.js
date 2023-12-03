@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 
-let input = readFileSync("./input.txt", "utf-8").split("\n");
+const input = readFileSync("./input.txt", "utf-8").split("\n");
 
 /* MAX VALUES USED FOR PART 1 COMPARISON */
 // const maxRed = 12;
