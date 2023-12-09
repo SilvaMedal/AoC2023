@@ -5,7 +5,7 @@ const input = readFileSync("./input.txt", "utf-8").split("\n");
 const maps = {};
 const mapKeys = [];
 let currentMapType = "";
-const locations = [];
+let locations = [];
 
 // find the seeds, and start our map with their values
 let seeds = input[0].replace("seeds: ", "").split(" ").map(Number);
@@ -22,33 +22,33 @@ for (const line of input) {
     maps[currentMapType]?.push(values);
   }
 }
-//  Traverse the maps for each seed
-seeds.forEach((seed) => {
-  let maxCount = mapKeys.length;
-  let counter = 0;
-  // Push our locations into one array
-  locations.push(findLocation(seed, maps[mapKeys[counter]], counter, maxCount));
-});
+const moreSeeds = [];
 
-function findLocation(seedTracker, map, counter, maxCount) {
-  for (let x = 0; x < map.length; x++) {
-    let srcStart = map[x][1];
-    let srcEnd = map[x][1] + (map[x][2] - 1);
-    let destStart = map[x][0];
-    // Check if the seedTracker is in the current range
-    if (seedTracker >= srcStart && seedTracker <= srcEnd) {
-      seedTracker = seedTracker - srcStart + destStart;
-      // Necessary to prevent checking the same map with the new number
-      break;
-    }
+for (let i = 0; i < seeds.length; i += 2) {
+  const seed = seeds[i];
+
+  const count = seeds[i + 1];
+  for (let j = 0; j < count; j++) {
+    moreSeeds.push(seed + j);
   }
-  counter++; // To keep track of which map we're currently on
-  //   If there are maps left
-  if (counter < maxCount) {
-    return findLocation(seedTracker, maps[mapKeys[counter]], counter, maxCount);
-  }
-  return seedTracker;
 }
 
-// Find the lowest location
+// changed the recursive function to for...loops to help prevent stack overflow
+for (const seed of moreSeeds) {
+  let seedTracker = seed;
+  for (let counter = 0; counter < mapKeys.length; counter++) {
+    const currentMap = maps[mapKeys[counter]];
+    for (const map of currentMap) {
+      const srcStart = map[1];
+      const srcEnd = map[1] + (map[2] - 1);
+      const destStart = map[0];
+      if (seedTracker >= srcStart && seedTracker <= srcEnd) {
+        seedTracker = seedTracker - srcStart + destStart;
+        break;
+      }
+    }
+  }
+  locations.push(seedTracker);
+}
+
 console.log(Math.min(...locations));
