@@ -8,6 +8,7 @@ const newInput = [];
 const handByStrength = Array.from({ length: 7 }, () => []);
 
 const cardStrength = {
+  J: 1,
   2: 2,
   3: 3,
   4: 4,
@@ -17,13 +18,13 @@ const cardStrength = {
   8: 8,
   9: 9,
   T: 10,
-  J: 11,
+  // J: 11,
   Q: 12,
   K: 13,
   A: 14,
 };
 
-/* 
+/*
 Object hand-to-numberVariations-to-power(to be assigned) chart:
 Five of a kind - 1 - (6)
 Four of a kind - 2 - (5)
@@ -47,6 +48,27 @@ newInput.forEach((hand) => {
     } else {
       handVariations[hand[0][i]]++;
     }
+  }
+  if (Object.keys(handVariations).includes("J")) {
+    // Remove jacks from a temp card output to sort by most/best cards
+    let cards = hand[0].replace(/J/g, "").split("");
+    cards.sort((a, b) => {
+      // If all card amounts are equal, compare the cards themselves
+      const aValue = handVariations[a];
+      const bValue = handVariations[b];
+      if (aValue !== bValue) {
+        return bValue - aValue;
+      }
+
+      if (aValue === bValue && cardStrength[a] !== cardStrength[b]) {
+        return cardStrength[a] - cardStrength[b];
+      }
+
+      return 0; // Hands are equal
+    });
+    let wilds = handVariations["J"];
+    handVariations[cards[0]] += wilds;
+    delete handVariations["J"];
   }
 
   // This switch() then separates the type of hand into an Array
