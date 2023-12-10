@@ -15,19 +15,21 @@ function findNextValue(history) {
 
   //   Not happy with this loop
   while (true) {
-    adders.unshift(sequence[sequence.length - 1]);
+    // minor change for part2
+    adders.unshift(sequence[0]);
 
     const differences = [];
     for (let i = 1; i < sequence.length; i++) {
       differences.push(sequence[i] - sequence[i - 1]);
     }
     if (differences.every((diff) => diff === 0)) {
+      adders.unshift(0);
       break;
     }
     sequence = differences;
   }
-
-  return adders.reduce((a, b) => a + b);
+  // minor change for part2
+  return adders.reduce((a, b) => b - a);
 }
 
 let sum = 0;
@@ -37,3 +39,6 @@ newInput.forEach((history) => {
 });
 
 console.log(sum);
+
+// b-a = c
+// b-c = a
