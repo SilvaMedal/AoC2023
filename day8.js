@@ -13,18 +13,45 @@ for (let i = 2; i < input.length; i++) {
   //   console.log(matches);
 }
 
-let key = "AAA";
-let end = "ZZZ";
-let step = 0;
-let totalSteps = 0;
-while (key !== end) {
-  if (step === instructions.length) {
-    step = 0;
+let aKeys = Object.keys(map).filter((key) => key.endsWith("A"));
+
+let zSteps = [];
+
+// Determine how many steps for each "A" key to get to a "Z" key
+aKeys.forEach((key) => {
+  let step = 0;
+  let totalSteps = 0;
+  while (!key.endsWith("Z")) {
+    if (step === instructions.length) {
+      step = 0;
+    }
+    let dest = Number(instructions[step]);
+    key = map[key][dest];
+    totalSteps++;
+    step++;
   }
-  let dest = Number(instructions[step]);
-  key = map[key][dest];
-  totalSteps++;
-  step++;
+  zSteps.push(totalSteps);
+});
+
+// Sort low to high
+zSteps = zSteps.sort((a, b) => a - b);
+
+// Find the LCM of the step values in the array
+function leastCommonMultiple(array) {
+  function gcd(a, b) {
+    return !b ? a : gcd(b, a % b);
+  }
+
+  function lcm(a, b) {
+    return (a * b) / gcd(a, b);
+  }
+
+  let multiple = array[0];
+  array.forEach((n) => {
+    multiple = lcm(multiple, n);
+  });
+
+  return multiple;
 }
 
-console.log(totalSteps);
+console.log(leastCommonMultiple(zSteps));
